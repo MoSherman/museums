@@ -1,0 +1,225 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --border: #e0ddd8;
+  --text: #1a1a1a;
+  --muted: #777;
+  --accent: #1a5276;
+  --current-bg: #eafaf1;
+  --upcoming-bg: #eaf4fb;
+  --unknown-bg: #fdfbef;
+  --badge-current: #1e8449;
+  --badge-upcoming: #1a5276;
+  --badge-unknown: #7d6608;
+  font-size: 15px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  background: var(--accent);
+  color: #fff;
+  padding: 1rem 2rem;
+}
+
+header h1 a {
+  color: inherit;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filters label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.filters select {
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  font-size: 0.9rem;
+}
+
+.filters button,
+.refresh-btn {
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.filters button:hover,
+.refresh-btn:hover { background: #e8e5e0; }
+
+.refresh-btn {
+  margin-left: auto;
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.clear-link {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+/* Status bar */
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.status-chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.2rem 0.6rem;
+}
+
+.status-chip strong { color: var(--text); }
+.status-chip small { margin-left: 0.3em; opacity: 0.7; }
+
+/* Table */
+.exhibitions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+
+.exhibitions-table th {
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: #f2f0ec;
+}
+
+.exhibitions-table td {
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.exhibitions-table tr:last-child td { border-bottom: none; }
+
+.row-current  { background: var(--current-bg); }
+.row-upcoming { background: var(--upcoming-bg); }
+.row-unknown  { background: var(--unknown-bg); }
+
+.museum-cell {
+  white-space: nowrap;
+  font-weight: 500;
+  width: 150px;
+}
+
+.title-cell a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.title-cell a:hover { text-decoration: underline; }
+
+.dates-cell {
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.raw-dates { font-style: italic; }
+
+.status-cell { width: 90px; }
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-current  { background: #d5f5e3; color: var(--badge-current); }
+.badge-upcoming { background: #d6eaf8; color: var(--badge-upcoming); }
+.badge-unknown  { background: #fef9e7; color: var(--badge-unknown); }
+
+.empty-msg {
+  padding: 2rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.muted { color: var(--muted); }
+
+/* Notification toast */
+#toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #1a5276;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 680px) {
+  .dates-cell, .status-cell { display: none; }
+  .museum-cell { width: auto; }
+}

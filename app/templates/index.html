@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}UK Museum Exhibitions{% endblock %}
+
+{% block content %}
+
+<section class="controls">
+  <form method="get" action="/" class="filters">
+    <label for="museum">Museum</label>
+    <select name="museum" id="museum">
+      <option value="">All museums</option>
+      {% for slug, label in museum_labels.items() %}
+        <option value="{{ slug }}" {% if selected_museum == slug %}selected{% endif %}>
+          {{ label }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label for="status">Status</label>
+    <select name="status" id="status">
+      <option value="">All</option>
+      <option value="current"  {% if selected_status == 'current'  %}selected{% endif %}>Current</option>
+      <option value="upcoming" {% if selected_status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+      <option value="unknown"  {% if selected_status == 'unknown'  %}selected{% endif %}>Unknown</option>
+    </select>
+
+    <button type="submit">Filter</button>
+    {% if selected_museum or selected_status %}
+      <a href="/" class="clear-link">Clear</a>
+    {% endif %}
+  </form>
+
+  <button id="refresh-btn" class="refresh-btn">Refresh data</button>
+</section>
+
+<section class="status-bar">
+  {% for s in status_data %}
+    <span class="status-chip">
+      {{ museum_labels.get(s.museum, s.museum) }}:
+      <strong>{{ s.count }}</strong>
+      <small>{{ s.last_scraped[:10] if s.last_scraped else 'never' }}</small>
+    </span>
+  {% endfor %}
+  {% if not status_data %}
+    <span class="status-chip muted">No data yet — refresh to scrape.</span>
+  {% endif %}
+</section>
+
+{% if exhibitions %}
+<table class="exhibitions-table">
+  <thead>
+    <tr>
+      <th>Museum</th>
+      <th>Exhibition</th>
+      <th>Dates</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ex in exhibitions %}
+    <tr class="row-{{ ex.status }}">
+      <td class="museum-cell">{{ ex.museum_label }}</td>
+      <td class="title-cell">
+        <a href="{{ ex.url }}" target="_blank" rel="noopener">{{ ex.title }}</a>
+      </td>
+      <td class="dates-cell">
+        {% if ex.date_start or ex.date_end %}
+          {% if ex.date_start %}{{ ex.date_start }}{% endif %}
+          {% if ex.date_start and ex.date_end %} – {% endif %}
+          {% if ex.date_end %}{{ ex.date_end }}{% endif %}
+        {% elif ex.raw_dates %}
+          <span class="raw-dates" title="{{ ex.raw_dates }}">{{ ex.raw_dates }}</span>
+        {% else %}
+          <span class="muted">—</span>
+        {% endif %}
+      </td>
+      <td class="status-cell">
+        <span class="badge badge-{{ ex.status }}">{{ ex.status }}</span>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="empty-msg">
+    {% if selected_museum or selected_status %}
+      No exhibitions match your filters.
+    {% else %}
+      No exhibitions found. Click <strong>Refresh data</strong> to scrape.
+    {% endif %}
+  </p>
+{% endif %}
+
+{% endblock %}
