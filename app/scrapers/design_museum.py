@@ -67,6 +67,14 @@ class DesignMuseumScraper(BaseScraper):
 
             date_start, date_end = parse_uk_date_range(raw_dates) if raw_dates else (None, None)
 
+            # Admission: "Free display" / "Free garden display" in date text → free
+            if raw_dates and raw_dates.lower().startswith("free"):
+                admission = "free"
+            elif raw_dates:
+                admission = "paid"
+            else:
+                admission = None
+
             results.append(
                 RawExhibition(
                     title=title,
@@ -74,6 +82,7 @@ class DesignMuseumScraper(BaseScraper):
                     raw_dates=raw_dates,
                     date_start=date_start,
                     date_end=date_end,
+                    admission=admission,
                 )
             )
 

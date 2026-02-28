@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS exhibitions (
     date_start  TEXT,
     date_end    TEXT,
     status      TEXT NOT NULL,
+    admission   TEXT,
     raw_dates   TEXT,
     scraped_at  TEXT NOT NULL,
     UNIQUE(museum, url)
@@ -46,6 +47,12 @@ def db_connection():
 def init_db():
     with db_connection() as conn:
         conn.executescript(SCHEMA)
+        # Migrate existing DBs that predate the admission column
+        try:
+            conn.execute("ALTER TABLE exhibitions ADD COLUMN admission TEXT")
+            logger.info("Migrated: added admission column")
+        except sqlite3.OperationalError:
+            pass  # Column already exists
     logger.info("Database initialised at %s", DB_PATH)
 
 
@@ -53,14 +60,15 @@ def upsert_exhibition(conn: sqlite3.Connection, row: dict):
     conn.execute(
         """
         INSERT INTO exhibitions
-            (museum, title, url, date_start, date_end, status, raw_dates, scraped_at)
+            (museum, title, url, date_start, date_end, status, admission, raw_dates, scraped_at)
         VALUES
-            (:museum, :title, :url, :date_start, :date_end, :status, :raw_dates, :scraped_at)
+            (:museum, :title, :url, :date_start, :date_end, :status, :admission, :raw_dates, :scraped_at)
         ON CONFLICT(museum, url) DO UPDATE SET
             title      = excluded.title,
             date_start = excluded.date_start,
             date_end   = excluded.date_end,
             status     = excluded.status,
+            admission  = excluded.admission,
             raw_dates  = excluded.raw_dates,
             scraped_at = excluded.scraped_at
         """,
@@ -83,7 +91,7 @@ def query_exhibitions(
             params.append(status)
         where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
         sql = f"""
-            SELECT museum, title, url, date_start, date_end, status, raw_dates, scraped_at
+            SELECT museum, title, url, date_start, date_end, status, admission, raw_dates, scraped_at
             FROM exhibitions
             {where}
             ORDER BY

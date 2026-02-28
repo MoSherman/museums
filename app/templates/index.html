@@ -51,6 +51,7 @@
       <th>Museum</th>
       <th>Exhibition</th>
       <th>Dates</th>
+      <th>Admission</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -68,6 +69,17 @@
           {% if ex.date_end %}{{ ex.date_end }}{% endif %}
         {% elif ex.raw_dates %}
           <span class="raw-dates" title="{{ ex.raw_dates }}">{{ ex.raw_dates }}</span>
+        {% else %}
+          <span class="muted">—</span>
+        {% endif %}
+      </td>
+      <td class="admission-cell">
+        {% if ex.admission == 'free' %}
+          <span class="badge badge-free">Free</span>
+        {% elif ex.admission == 'paid' %}
+          <span class="badge badge-paid">Book</span>
+        {% elif ex.admission == 'included' %}
+          <span class="badge badge-included">Included</span>
         {% else %}
           <span class="muted">—</span>
         {% endif %}

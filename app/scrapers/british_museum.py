@@ -68,6 +68,16 @@ class BritishMuseumScraper(BaseScraper):
             raw_dates = date_el.get_text(strip=True) if date_el else None
             date_start, date_end = parse_uk_date_range(raw_dates) if raw_dates else (None, None)
 
+            # Admission: defacer div says "Free" or "Book now"
+            defacer = card.select_one(".teaser__defacer")
+            defacer_text = defacer.get_text(strip=True).lower() if defacer else ""
+            if "free" in defacer_text:
+                admission = "free"
+            elif "book" in defacer_text:
+                admission = "paid"
+            else:
+                admission = None
+
             results.append(
                 RawExhibition(
                     title=title,
@@ -75,6 +85,7 @@ class BritishMuseumScraper(BaseScraper):
                     raw_dates=raw_dates,
                     date_start=date_start,
                     date_end=date_end,
+                    admission=admission,
                 )
             )
 

@@ -17,6 +17,7 @@ class RawExhibition:
     raw_dates: Optional[str] = None
     date_start: Optional[str] = None  # ISO 8601 date string
     date_end: Optional[str] = None    # ISO 8601 date string
+    admission: Optional[str] = None   # 'free' | 'paid' | 'included' | None
 
 
 def _parse_single_date(text: str) -> Optional[date]:
@@ -152,6 +153,7 @@ class BaseScraper(ABC):
                     "date_start": ex.date_start,
                     "date_end": ex.date_end,
                     "status": status,
+                    "admission": ex.admission,
                     "raw_dates": ex.raw_dates,
                     "scraped_at": scraped_at,
                 }

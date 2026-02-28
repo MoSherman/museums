@@ -69,6 +69,14 @@ class KewScraper(BaseScraper):
 
             date_start, date_end = parse_uk_date_range(raw_dates) if raw_dates else (None, None)
 
+            # Admission: label contains "Included with entry" → included with garden ticket
+            label_el = card.select_one(".c-card__label")
+            label_text = label_el.get_text(separator=" ", strip=True) if label_el else ""
+            if "included with entry" in label_text.lower():
+                admission = "included"
+            else:
+                admission = None
+
             results.append(
                 RawExhibition(
                     title=title,
@@ -76,6 +84,7 @@ class KewScraper(BaseScraper):
                     raw_dates=raw_dates,
                     date_start=date_start,
                     date_end=date_end,
+                    admission=admission,
                 )
             )
 

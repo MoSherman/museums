@@ -78,8 +78,19 @@ class VAMScraper(BaseScraper):
                 )
 
             raw_dates = date_el.get_text(strip=True) if date_el else None
-            # Strip "Closes " / "Opens " prefixes that dateparser handles anyway
             date_start, date_end = parse_uk_date_range(raw_dates) if raw_dates else (None, None)
+
+            # Admission: third icon item contains ticket price or "Free"
+            icon_items = [el.get_text(strip=True) for el in card.select(".b-icon-list__item-text")]
+            ticket_text = icon_items[2].lower() if len(icon_items) > 2 else ""
+            if ticket_text.startswith("£") or "weekday" in ticket_text:
+                admission = "paid"
+            elif "free" in ticket_text:
+                admission = "free"
+            elif "sold out" in ticket_text or "ticket" in ticket_text:
+                admission = "paid"
+            else:
+                admission = None
 
             results.append(
                 RawExhibition(
@@ -88,6 +99,7 @@ class VAMScraper(BaseScraper):
                     raw_dates=raw_dates,
                     date_start=date_start,
                     date_end=date_end,
+                    admission=admission,
                 )
             )
 

@@ -188,6 +188,9 @@ main {
 .badge-current  { background: #d5f5e3; color: var(--badge-current); }
 .badge-upcoming { background: #d6eaf8; color: var(--badge-upcoming); }
 .badge-unknown  { background: #fef9e7; color: var(--badge-unknown); }
+.badge-free     { background: #d5f5e3; color: #1e8449; }
+.badge-paid     { background: #fdebd0; color: #7d3c00; }
+.badge-included { background: #e8daef; color: #6c3483; }
 
 .empty-msg {
   padding: 2rem;
@@ -220,6 +223,6 @@ main {
 }
 
 @media (max-width: 680px) {
-  .dates-cell, .status-cell { display: none; }
+  .dates-cell, .status-cell, .admission-cell { display: none; }
   .museum-cell { width: auto; }
 }
