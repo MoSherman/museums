@@ -7,7 +7,7 @@
 <section class="controls">
   <form method="get" action="/" class="filters">
     <label for="museum">Museum</label>
-    <select name="museum" id="museum">
+    <select name="museum" id="museum" onchange="this.form.submit()">
       <option value="">All museums</option>
       {% for slug, label in museum_labels.items() %}
         <option value="{{ slug }}" {% if selected_museum == slug %}selected{% endif %}>
@@ -17,14 +17,12 @@
     </select>
 
     <label for="status">Status</label>
-    <select name="status" id="status">
+    <select name="status" id="status" onchange="this.form.submit()">
       <option value="">All</option>
       <option value="current"  {% if selected_status == 'current'  %}selected{% endif %}>Current</option>
       <option value="upcoming" {% if selected_status == 'upcoming' %}selected{% endif %}>Upcoming</option>
       <option value="unknown"  {% if selected_status == 'unknown'  %}selected{% endif %}>Unknown</option>
     </select>
-
-    <button type="submit">Filter</button>
     {% if selected_museum or selected_status %}
       <a href="/" class="clear-link">Clear</a>
     {% endif %}
